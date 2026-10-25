@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>html{padding-top:env(safe-area-inset-top,0px)}</style>
+<title>SCS Cosmetics & Skincare</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: storefront. Announcement bar, sticky header + category nav, split hero, category tiles, filterable product grid, routine strip, footer. Berry on blush, sage for skincare. */
+:root{
+  --bg:#fff8f8; --surface:#ffffff; --fg:#2a1519; --muted:#7d6268; --line:#f0dcdf;
+  --berry:#8c1d40; --berry-ink:#ffffff; --blush:#fbe3e7; --sage:#dbe8de; --sage-ink:#2f4d3a;
+  --sale:#d6336c; --ok:#2f7d4f;
+  --f-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-body:'Figtree','Segoe UI',system-ui,sans-serif;
+  --shadow:0 10px 30px -14px rgba(140,29,64,.35);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1a0f12; --surface:#251619; --fg:#f8e9eb; --muted:#b99aa1; --line:#3b2429;
+  --berry:#f0839f; --berry-ink:#2a0d16; --blush:#33191f; --sage:#1f2f25; --sage-ink:#bfe0c9;
+  --sale:#ff6f9d; --ok:#7fd3a0; --shadow:0 10px 30px -14px rgba(0,0,0,.7); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1a0f12; --surface:#251619; --fg:#f8e9eb; --muted:#b99aa1; --line:#3b2429;
+  --berry:#f0839f; --berry-ink:#2a0d16; --blush:#33191f; --sage:#1f2f25; --sage-ink:#bfe0c9;
+  --sale:#ff6f9d; --ok:#7fd3a0; --shadow:0 10px 30px -14px rgba(0,0,0,.7); color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--surface)}
+h1,h2,h3{font-family:var(--f-display);line-height:1.08;letter-spacing:-.02em;margin:0;text-wrap:balance}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--berry);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1200px;margin-inline:auto}
+.bleed{margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+
+/* announcement */
+.announce{background:var(--berry);color:var(--berry-ink);font-size:13px;font-weight:600;text-align:center;padding:8px 12px;letter-spacing:.02em}
+
+/* header */
+header.site{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--surface);border-bottom:1px solid var(--line)}
+.hrow{display:flex;align-items:center;gap:16px;padding-block:12px}
+.logo{display:flex;align-items:baseline;gap:8px;text-decoration:none;flex:none}
+.logo b{font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:-.04em;color:var(--berry)}
+.logo span{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);line-height:1.15;max-width:90px}
+.search{flex:1;min-width:0;position:relative}
+.search input{width:100%;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:11px 18px 11px 44px;font:inherit}
+.search input::placeholder{color:var(--muted)}
+.search svg{position:absolute;left:16px;top:50%;translate:0 -50%;width:18px;height:18px;color:var(--muted)}
+.icons{display:flex;gap:8px;flex:none}
+.ibtn{position:relative;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);display:grid;place-items:center}
+.ibtn:hover{border-color:var(--berry)}
+.ibtn svg{width:20px;height:20px}
+.count{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--berry);color:var(--berry-ink);font-size:11px;font-weight:700;display:grid;place-items:center;padding:0 5px}
+nav.cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+nav.cats::-webkit-scrollbar{display:none}
+nav.cats button{flex:none;border:0;background:transparent;padding:8px 14px;border-radius:999px;font-weight:600;font-size:14px;color:var(--fg)}
+nav.cats button:hover{background:var(--blush)}
+nav.cats button.on{background:var(--berry);color:var(--berry-ink)}
+nav.cats .hot{color:var(--sale)}
+nav.cats button.on.hot{color:var(--berry-ink)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:32px;align-items:center;padding-block:44px 36px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--berry)}
+.hero h1{font-size:clamp(38px,6vw,68px);font-weight:800;margin-block:12px 16px}
+.hero h1 em{font-style:normal;color:var(--berry)}
+.hero p{color:var(--muted);max-width:46ch;font-size:17px;margin:0 0 24px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:13px 24px;font-weight:700;font-size:15px;text-decoration:none;background:var(--berry);color:var(--berry-ink)}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--fg)}
+.hero-art{position:relative;aspect-ratio:1/1;max-width:100%;border-radius:36px;background:var(--blush);overflow:hidden}
+.hero-art svg{position:absolute;inset:0;width:100%;height:100%}
+.stamp{position:absolute;right:18px;top:18px;width:96px;height:96px;border-radius:50%;background:var(--berry);color:var(--berry-ink);display:grid;place-items:center;text-align:center;font-family:var(--f-display);font-weight:800;line-height:1;rotate:10deg}
+.stamp b{font-size:30px;display:block}
+.stamp small{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--f-body);font-weight:700}
+
+/* trust */
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding-block:8px 36px}
+.trust div{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:18px;background:var(--surface);border:1px solid var(--line);min-width:0}
+.trust svg{flex:none;width:26px;height:26px;color:var(--berry)}
+.trust strong{display:block;font-size:14px;line-height:1.2}
+.trust span{font-size:12.5px;color:var(--muted)}
+
+/* section heads */
+.sec{padding-block:28px}
+.sechead{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.sechead h2{font-size:clamp(26px,3.6vw,38px);font-weight:700}
+.sechead p{margin:6px 0 0;color:var(--muted)}
+
+/* category tiles */
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.tile{border:0;text-align:left;border-radius:24px;padding:18px;aspect-ratio:3/4;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;background:var(--blush);transition:translate .2s}
+.tile:hover{translate:0 -4px}
+.tile.sage{background:var(--sage);color:var(--sage-ink)}
+.tile svg{position:absolute;right:-6px;bottom:-4px;width:78%;opacity:.95}
+.tile h3{font-size:22px;font-weight:700;position:relative}
+.tile small{font-weight:600;font-size:13px;position:relative;opacity:.8}
+
+/* products */
+.tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600}
+.chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+select{font:inherit;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:8px 14px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card:hover{box-shadow:var(--shadow)}
+.pic{position:relative;aspect-ratio:1/1;background:var(--tint,var(--blush));display:grid;place-items:center}
+.pic svg{width:58%;height:auto}
+.badge{position:absolute;left:12px;top:12px;background:var(--sale);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+.catlab{position:absolute;right:12px;top:12px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.info{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.info h3{font-family:var(--f-body);font-size:15.5px;font-weight:600;letter-spacing:0;line-height:1.3}
+.sub{font-size:12.5px;color:var(--muted)}
+.price{display:flex;gap:8px;align-items:baseline;margin-top:auto;padding-top:6px;font-variant-numeric:tabular-nums}
+.price b{font-family:var(--f-display);font-size:20px;font-weight:700;color:var(--berry)}
+.price s{color:var(--muted);font-size:13.5px}
+.add{margin-top:8px;border:1.5px solid var(--berry);background:transparent;color:var(--berry);border-radius:999px;padding:9px;font-weight:700;font-size:14px}
+.add:hover{background:var(--berry);color:var(--berry-ink)}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:48px 0}
+
+/* offer band */
+.offer{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center;border-radius:32px;background:var(--berry);color:var(--berry-ink);padding:40px;margin-block:28px;overflow:hidden}
+.offer h2{font-size:clamp(28px,4vw,46px);font-weight:800}
+.offer p{margin:12px 0 22px;opacity:.9;max-width:44ch}
+.offer .btn{background:var(--berry-ink);color:var(--berry)}
+.offer .big{font-family:var(--f-display);font-weight:800;font-size:clamp(70px,13vw,150px);line-height:.85;letter-spacing:-.05em;text-align:right}
+.offer .big small{display:block;font-size:.22em;letter-spacing:.06em;margin-top:10px;text-transform:uppercase;font-family:var(--f-body);font-weight:700}
+
+/* routine */
+.routine{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.step{background:var(--sage);color:var(--sage-ink);border-radius:22px;padding:20px;min-width:0}
+.step:nth-child(even){background:var(--blush);color:var(--fg)}
+.step small{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+.step h3{font-size:22px;margin:6px 0 8px}
+.step p{margin:0;font-size:14.5px;opacity:.9}
+
+/* footer */
+footer{border-top:1px solid var(--line);margin-top:40px;padding-block:36px 48px}
+.frow{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:28px}
+footer h4{margin:0 0 10px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+footer a{text-decoration:none}
+footer a:hover{color:var(--berry)}
+.fb{display:inline-flex;gap:8px;align-items:center;margin-top:14px}
+.copy{margin-top:28px;color:var(--muted);font-size:13px}
+
+/* cart drawer */
+.scrim{position:fixed;inset:0;background:rgba(20,8,12,.5);z-index:80;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.open{opacity:1;pointer-events:auto}
+aside.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--surface);z-index:90;translate:100% 0;transition:translate .25s;display:flex;flex-direction:column;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) 20px;box-shadow:-20px 0 50px -20px rgba(0,0,0,.4)}
+aside.drawer.open{translate:0 0}
+.dhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.dhead h2{font-size:24px}
+.items{flex:1;overflow:auto;display:grid;gap:10px;align-content:start}
+.line{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:8px;border-radius:14px;background:var(--bg)}
+.line .th{width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:var(--tint,var(--blush))}
+.line .th svg{width:60%}
+.line b{font-size:14px;line-height:1.25;display:block}
+.line span{font-size:13px;color:var(--muted)}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface)}
+.dfoot{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:10px}
+.total{display:flex;justify-content:space-between;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums}
+.note{font-size:13px;color:var(--muted);margin:0}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));translate:-50% 20px;opacity:0;background:var(--fg);color:var(--bg);padding:10px 20px;border-radius:999px;font-weight:600;font-size:14px;z-index:100;transition:.25s;pointer-events:none}
+.toast.show{opacity:1;translate:-50% 0}
+
+@media (max-width:980px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .tiles{grid-template-columns:repeat(3,1fr)}
+  .trust,.routine{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:720px){
+  .hero{grid-template-columns:1fr;padding-block:24px}
+  .hero-art{order:-1;aspect-ratio:4/3}
+  .hrow{flex-wrap:wrap}
+  .search{order:3;flex-basis:100%}
+  .logo{margin-right:auto}
+  .logo span{display:none}
+  .grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .tiles{grid-template-columns:repeat(2,1fr)}
+  .offer{grid-template-columns:1fr;padding:28px}
+  .offer .big{text-align:left}
+  .frow{grid-template-columns:1fr}
+  .info{padding:12px}
+}
+@media (max-width:420px){.trust{grid-template-columns:1fr}.routine{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+</head>
+<body>
+<div class="announce bleed">New arrivals and sale prices · Order through our Facebook page</div>
+
+<header class="site bleed">
+  <div class="wrap">
+    <div class="hrow">
+      <a class="logo" href="#top" aria-label="SCS Cosmetics &amp; Skincare home"><b>SCS</b><span>Cosmetics &amp; Skincare</span></a>
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Search lipstick, serum, shampoo…" aria-label="Search products" autocomplete="off">
+      </div>
+      <div class="icons">
+        <button class="ibtn" id="themeBtn" aria-label="Switch light or dark theme" title="Theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button class="ibtn" id="cartBtn" aria-label="Open cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h13l-1.5 9H8L6 3H3"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg>
+          <span class="count" id="count">0</span>
+        </button>
+      </div>
+    </div>
+    <nav class="cats" id="nav" aria-label="Categories"></nav>
+  </div>
+</header>
+
+<main id="top" class="wrap">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">New season · Dhaka</div>
+      <h1>Glow that starts with <em>good skin.</em></h1>
+      <p>Makeup, skincare, hair care and fragrance for every day. Pick what you love, add it to your cart and send your order to us on Facebook.</p>
+      <div class="cta">
+        <a class="btn" href="#shop" data-go="all">Shop all products</a>
+        <a class="btn ghost" href="#shop" data-go="Sale">See sale items</a>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
+        <circle cx="300" cy="120" r="150" fill="var(--sage)"/>
+        <circle cx="70" cy="360" r="120" fill="var(--berry)" opacity=".12"/>
+        <g transform="translate(60 120)">
+          <rect x="0" y="40" width="70" height="170" rx="14" fill="var(--berry)"/>
+          <rect x="18" y="10" width="34" height="38" rx="8" fill="var(--fg)"/>
+          <rect x="10" y="95" width="50" height="50" rx="6" fill="var(--berry-ink)" opacity=".9"/>
+        </g>
+        <g transform="translate(160 70)">
+          <rect x="0" y="80" width="96" height="170" rx="22" fill="var(--surface)" stroke="var(--fg)" stroke-width="3"/>
+          <rect x="28" y="40" width="40" height="46" rx="6" fill="var(--fg)"/>
+          <rect x="40" y="10" width="16" height="34" rx="5" fill="var(--berry)"/>
+          <circle cx="48" cy="165" r="26" fill="var(--blush)"/>
+        </g>
+        <g transform="translate(290 190)">
+          <rect x="0" y="60" width="64" height="100" rx="12" fill="var(--sage-ink)"/>
+          <rect x="6" y="38" width="52" height="26" rx="6" fill="var(--blush)"/>
+          <path d="M20 38 L32 0 L44 38Z" fill="var(--berry)"/>
+        </g>
+        <ellipse cx="200" cy="352" rx="150" ry="12" fill="var(--fg)" opacity=".08"/>
+      </svg>
+      <div class="stamp"><div><b>30%</b><small>off selected</small></div></div>
+    </div>
+  </section>
+
+  <section class="trust" aria-label="Why shop with us">
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="m9 12 2 2 4-4"/></svg><p style="margin:0"><strong>Authentic products</strong><span>Carefully sourced</span></p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg><p style="margin:0"><strong>Delivery in Bangladesh</strong><span>Inside and outside Dhaka</span></p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"/></svg><p style="margin:0"><strong>Order on Facebook</strong><span>Chat with us to confirm</span></p></div>
+    <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.600-7 10-7 10z"/></svg><p style="margin:0"><strong>Skin-first picks</strong><span>Simple routines that work</span></p></div>
+  </section>
+
+  <section class="sec" aria-labelledby="h-cat">
+    <div class="sechead"><div><h2 id="h-cat">Shop by category</h2><p>Tap a category to see what is in stock.</p></div></div>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section class="sec" id="shop" aria-labelledby="h-shop">
+    <div class="sechead">
+      <div><h2 id="h-shop">Our products</h2><p id="resultInfo"></p></div>
+      <div class="tools">
+        <label class="sub" for="sort" style="display:none">Sort</label>
+        <select id="sort" aria-label="Sort products">
+          <option value="feat">Featured</option>
+          <option value="low">Price: low to high</option>
+          <option value="high">Price: high to low</option>
+          <option value="off">Biggest discount</option>
+        </select>
+      </div>
+    </div>
+    <div class="chips" id="subchips" aria-label="Filter"></div>
+    <div class="grid" id="grid" aria-live="polite"></div>
+  </section>
+
+  <section class="offer">
+    <div>
+      <div class="eyebrow" style="color:inherit;opacity:.8">Limited stock</div>
+      <h2>Clearance sale is on.</h2>
+      <p>Lip colour, mascara, shampoo and more at reduced prices while stock lasts. Message us on Facebook to check what is left.</p>
+      <a class="btn" href="#shop" data-go="Sale">Browse sale</a>
+    </div>
+    <div class="big" aria-hidden="true">৳100<small>starting from</small></div>
+  </section>
+
+  <section class="sec" aria-labelledby="h-routine">
+    <div class="sechead"><div><h2 id="h-routine">A simple daily skin routine</h2><p>Four steps. Morning and night.</p></div></div>
+    <div class="routine">
+      <div class="step"><small>Step one</small><h3>Cleanse</h3><p>Wash away oil, sweat and dust with a gentle face wash.</p></div>
+      <div class="step"><small>Step two</small><h3>Treat</h3><p>Use a serum or toner for your concern, such as dullness or dark spots.</p></div>
+      <div class="step"><small>Step three</small><h3>Moisturise</h3><p>A light gel for oily skin, a richer cream for dry skin.</p></div>
+      <div class="step"><small>Step four</small><h3>Protect</h3><p>Apply sunscreen every morning, even on cloudy days.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="bleed">
+  <div class="wrap">
+    <div class="frow">
+      <div>
+        <a class="logo" href="#top"><b>SCS</b><span>Cosmetics &amp; Skincare</span></a>
+        <p style="color:var(--muted);max-width:38ch">Beauty and skincare essentials for everyday glow. Follow our page for new arrivals and offers.</p>
+        <a class="btn fb" href="https://www.facebook.com/profile.php?id=61594981082939" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.600c0-.9.3-1.500 1.600-1.500h1.600V4.400c-.3 0-1.200-.1-2.300-.1-2.300 0-3.900 1.400-3.900 4v2.200H7.900v3h2.600V21z"/></svg>
+          Visit our Facebook page</a>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul id="flinks"></ul>
+      </div>
+      <div>
+        <h4>How to order</h4>
+        <ul style="color:var(--muted)">
+          <li>1. Add products to your cart</li>
+          <li>2. Copy your order message</li>
+          <li>3. Send it to us on Facebook</li>
+          <li>4. We confirm and deliver</li>
+        </ul>
+      </div>
+    </div>
+    <div class="copy">© 2026 SCS Cosmetics &amp; Skincare store. Prices shown are samples and can be changed any time.</div>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Your cart" aria-hidden="true">
+  <div class="dhead"><h2>Your cart</h2><button class="ibtn" id="closeCart" aria-label="Close cart">✕</button></div>
+  <div class="items" id="items"></div>
+  <div class="dfoot">
+    <div class="total"><span>Total</span><span id="total">৳0</span></div>
+    <p class="note">Delivery charge is confirmed when we reply to your order.</p>
+    <button class="btn" id="copyOrder">Copy order message</button>
+    <a class="btn ghost" href="https://www.facebook.com/profile.php?id=61594981082939" target="_blank" rel="noopener">Open Facebook to send</a>
+  </div>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  // type -> svg product drawing, filled with tokens
+  var ART={
+    lipstick:'<svg viewBox="0 0 100 120"><rect x="30" y="52" width="40" height="58" rx="6" fill="var(--fg)"/><rect x="34" y="34" width="32" height="22" rx="3" fill="var(--berry)"/><path d="M34 34 L42 14 L66 22 L66 34Z" fill="var(--berry)"/></svg>',
+    gloss:'<svg viewBox="0 0 100 120"><rect x="38" y="46" width="24" height="62" rx="10" fill="var(--berry)" opacity=".85"/><rect x="42" y="10" width="16" height="40" rx="6" fill="var(--fg)"/></svg>',
+    bottle:'<svg viewBox="0 0 100 120"><rect x="38" y="6" width="24" height="18" rx="4" fill="var(--fg)"/><rect x="42" y="22" width="16" height="12" fill="var(--fg)" opacity=".7"/><rect x="26" y="34" width="48" height="78" rx="14" fill="var(--surface)" stroke="var(--fg)" stroke-width="3"/><rect x="34" y="58" width="32" height="26" rx="4" fill="var(--berry)" opacity=".85"/></svg>',
+    pump:'<svg viewBox="0 0 100 120"><rect x="44" y="4" width="26" height="8" rx="3" fill="var(--fg)"/><rect x="50" y="10" width="8" height="16" fill="var(--fg)"/><rect x="28" y="26" width="44" height="86" rx="12" fill="var(--surface)" stroke="var(--fg)" stroke-width="3"/><circle cx="50" cy="70" r="14" fill="var(--berry)" opacity=".85"/></svg>',
+    tube:'<svg viewBox="0 0 100 120"><path d="M30 14h40l-4 90H34z" fill="var(--surface)" stroke="var(--fg)" stroke-width="3" stroke-linejoin="round"/><rect x="30" y="104" width="36" height="8" rx="2" fill="var(--fg)"/><rect x="36" y="40" width="28" height="30" rx="4" fill="var(--berry)" opacity=".85"/></svg>',
+    jar:'<svg viewBox="0 0 100 120"><rect x="18" y="44" width="64" height="20" rx="6" fill="var(--fg)"/><rect x="22" y="62" width="56" height="46" rx="10" fill="var(--surface)" stroke="var(--fg)" stroke-width="3"/><rect x="32" y="76" width="36" height="16" rx="4" fill="var(--berry)" opacity=".85"/></svg>',
+    spray:'<svg viewBox="0 0 100 120"><rect x="38" y="4" width="24" height="26" rx="5" fill="var(--fg)"/><rect x="62" y="10" width="14" height="6" rx="2" fill="var(--fg)"/><rect x="30" y="30" width="40" height="82" rx="12" fill="var(--surface)" stroke="var(--fg)" stroke-width="3"/><path d="M40 70c6-8 14-8 20 0-6 8-14 8-20 0z" fill="var(--berry)" opacity=".85"/></svg>',
+    palette:'<svg viewBox="0 0 100 120"><rect x="10" y="26" width="80" height="72" rx="10" fill="var(--fg)"/><g fill="var(--berry)"><circle cx="30" cy="50" r="9"/><circle cx="52" cy="50" r="9" opacity=".7"/><circle cx="74" cy="50" r="9" opacity=".5"/></g><g fill="var(--blush)"><circle cx="30" cy="76" r="9"/><circle cx="52" cy="76" r="9" opacity=".7"/><circle cx="74" cy="76" r="9" opacity=".5"/></g></svg>',
+    sponge:'<svg viewBox="0 0 100 120"><path d="M50 12c24 0 34 30 34 52 0 24-14 44-34 44S16 88 16 64c0-22 10-52 34-52z" fill="var(--berry)" opacity=".85"/><ellipse cx="38" cy="44" rx="8" ry="14" fill="#fff" opacity=".35"/></svg>',
+    brush:'<svg viewBox="0 0 100 120"><rect x="44" y="52" width="12" height="60" rx="6" fill="var(--fg)"/><rect x="42" y="38" width="16" height="18" fill="var(--muted)"/><path d="M40 40c0-22 8-30 10-30s10 8 10 30z" fill="var(--berry)"/></svg>',
+    mask:'<svg viewBox="0 0 100 120"><rect x="22" y="10" width="56" height="100" rx="8" fill="var(--surface)" stroke="var(--fg)" stroke-width="3"/><ellipse cx="50" cy="60" rx="16" ry="24" fill="var(--sage)"/><circle cx="43" cy="54" r="3" fill="var(--fg)"/><circle cx="57" cy="54" r="3" fill="var(--fg)"/><path d="M42 72q8 6 16 0" stroke="var(--fg)" stroke-width="3" fill="none" stroke-linecap="round"/></svg>',
+    curler:'<svg viewBox="0 0 100 120"><ellipse cx="50" cy="40" rx="34" ry="14" fill="none" stroke="var(--fg)" stroke-width="5"/><path d="M26 54L18 106M74 54l8 52" stroke="var(--fg)" stroke-width="7" stroke-linecap="round"/><ellipse cx="18" cy="108" rx="9" ry="6" fill="var(--berry)"/><ellipse cx="82" cy="108" rx="9" ry="6" fill="var(--berry)"/></svg>'
+  };
+  var P=[
+   // id,name,cat,sub,price,old,art,tint
+   ["Matte Lip Ink – Rosewood","Makeup","Lips",350,450,"lipstick","b"],
+   ["Glossy Lip Gloss Duo","Makeup","Lips",250,350,"gloss","b"],
+   ["Waterproof Volume Mascara","Makeup","Eyes",320,450,"tube","b"],
+   ["12-Shade Eyeshadow Palette","Makeup","Eyes",790,950,"palette","b"],
+   ["Liquid Blush – Peach Glow","Makeup","Face",260,350,"pump","b"],
+   ["Full Coverage Foundation 30ml","Makeup","Face",690,850,"bottle","b"],
+   ["Black Kajal Pencil","Makeup","Eyes",150,180,"gloss","b"],
+   ["Vitamin C Brightening Serum 30ml","Skin Care","Serum",990,1250,"pump","s"],
+   ["Niacinamide Toner 200ml","Skin Care","Toner",650,790,"spray","s"],
+   ["Gentle Foaming Face Wash 100ml","Skin Care","Cleanser",380,450,"tube","s"],
+   ["Hydrating Gel Moisturiser 50g","Skin Care","Moisturiser",750,890,"jar","s"],
+   ["Sunscreen SPF 50 PA+++ 50ml","Skin Care","Sunscreen",650,790,"tube","s"],
+   ["Aloe Soothing Gel 300ml","Skin Care","Body",450,0,"bottle","s"],
+   ["Hydrating Sheet Mask, pack of 5","Skin Care","Face mask",350,500,"mask","s"],
+   ["Anti Hair Fall Shampoo 400ml","Hair Care","Shampoo",890,1150,"bottle","b"],
+   ["Keratin Smooth Hair Mask 250g","Hair Care","Hair mask",950,0,"jar","b"],
+   ["Argan Hair Oil 100ml","Hair Care","Hair oil",550,690,"pump","b"],
+   ["Heat Protect Spray 150ml","Hair Care","Styling",480,0,"spray","b"],
+   ["Floral Body Mist 150ml","Fragrance","Body mist",450,700,"spray","s"],
+   ["Roll-On Deodorant 50ml","Fragrance","Deodorant",250,350,"gloss","s"],
+   ["Eau de Parfum 50ml","Fragrance","Perfume",1450,1800,"bottle","s"],
+   ["Beauty Blender Sponge","Makeup Tools","Sponge",90,150,"sponge","b"],
+   ["12-Piece Makeup Brush Set","Makeup Tools","Brushes",890,1200,"brush","b"],
+   ["Eyelash Curler","Makeup Tools","Eyes",180,250,"curler","b"]
+  ].map(function(r,i){return{id:i,name:r[0],cat:r[1],sub:r[2],price:r[3],old:r[4],art:r[5],tint:r[6]==="s"?"var(--sage)":"var(--blush)"}});
+
+  var CATS=["All","Makeup","Skin Care","Hair Care","Fragrance","Makeup Tools","Sale"];
+  var state={cat:"All",sub:"All",q:"",sort:"feat"};
+  var cart={};
+  var $=function(s){return document.querySelector(s)};
+  var fmt=function(n){return "৳"+n.toLocaleString("en-US")};
+  var off=function(p){return p.old?Math.round((1-p.price/p.old)*100):0};
+
+  function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toast.h);toast.h=setTimeout(function(){t.classList.remove("show")},1800)}
+
+  function buildNav(){
+    $("#nav").innerHTML=CATS.map(function(c){return '<button data-cat="'+c+'" class="'+(c==="Sale"?"hot ":"")+(c===state.cat?"on":"")+'">'+c+'</button>'}).join("");
+    $("#flinks").innerHTML=CATS.map(function(c){return '<li><a href="#shop" data-go="'+c+'">'+(c==="All"?"All products":c)+'</a></li>'}).join("");
+  }
+  function buildTiles(){
+    var info={"Makeup":["lipstick",""],"Skin Care":["pump","sage"],"Hair Care":["bottle",""],"Fragrance":["spray","sage"],"Makeup Tools":["brush",""]};
+    $("#tiles").innerHTML=Object.keys(info).map(function(c){
+      var n=P.filter(function(p){return p.cat===c}).length;
+      return '<button class="tile '+info[c][1]+'" data-go="'+c+'"><div><h3>'+c+'</h3><small>'+n+' products</small></div>'+ART[info[c][0]]+'</button>';
+    }).join("");
+  }
+  function subs(){
+    var list=P.filter(function(p){return state.cat==="All"||state.cat==="Sale"||p.cat===state.cat});
+    var s=[]; list.forEach(function(p){if(s.indexOf(p.sub)<0)s.push(p.sub)});
+    if(state.cat==="All"||state.cat==="Sale"){$("#subchips").innerHTML="";return}
+    $("#subchips").innerHTML=["All"].concat(s).map(function(x){return '<button class="chip '+(x===state.sub?"on":"")+'" data-sub="'+x+'">'+x+'</button>'}).join("");
+  }
+  function render(){
+    var q=state.q.trim().toLowerCase();
+    var list=P.filter(function(p){
+      if(state.cat==="Sale"&&!p.old)return false;
+      if(state.cat!=="All"&&state.cat!=="Sale"&&p.cat!==state.cat)return false;
+      if(state.sub!=="All"&&p.sub!==state.sub)return false;
+      if(q&&(p.name+" "+p.cat+" "+p.sub).toLowerCase().indexOf(q)<0)return false;
+      return true;
+    });
+    if(state.sort==="low")list.sort(function(a,b){return a.price-b.price});
+    if(state.sort==="high")list.sort(function(a,b){return b.price-a.price});
+    if(state.sort==="off")list.sort(function(a,b){return off(b)-off(a)});
+    $("#resultInfo").textContent=list.length+" product"+(list.length===1?"":"s")+(state.cat!=="All"?" in "+state.cat:"");
+    $("#grid").innerHTML=list.length?list.map(function(p){
+      return '<article class="card"><div class="pic" style="--tint:'+p.tint+'">'+(p.old?'<span class="badge">-'+off(p)+'%</span>':'')+'<span class="catlab">'+p.cat+'</span>'+ART[p.art]+'</div>'+
+        '<div class="info"><div class="sub">'+p.sub+'</div><h3>'+p.name+'</h3><div class="price"><b>'+fmt(p.price)+'</b>'+(p.old?'<s>'+fmt(p.old)+'</s>':'')+'</div>'+
+        '<button class="add" data-add="'+p.id+'">Add to cart</button></div></article>';
+    }).join(""):'<div class="empty">No products match your search. Try another word or category.</div>';
+    buildNav();subs();
+  }
+  function setCat(c){state.cat=c;state.sub="All";render()}
+
+  document.addEventListener("click",function(e){
+    var t=e.target.closest("[data-cat],[data-go],[data-sub],[data-add],[data-plus],[data-minus]");
+    if(!t)return;
+    if(t.dataset.cat){setCat(t.dataset.cat);$("#shop").scrollIntoView()}
+    else if(t.dataset.go){e.preventDefault();setCat(t.dataset.go);$("#shop").scrollIntoView()}
+    else if(t.dataset.sub){state.sub=t.dataset.sub;render()}
+    else if(t.dataset.add){var id=+t.dataset.add;cart[id]=(cart[id]||0)+1;drawCart();toast("Added to cart")}
+    else if(t.dataset.plus){cart[+t.dataset.plus]++;drawCart()}
+    else if(t.dataset.minus){var k=+t.dataset.minus;cart[k]--;if(cart[k]<=0)delete cart[k];drawCart()}
+  });
+  $("#q").addEventListener("input",function(e){state.q=e.target.value;if(state.q)state.cat="All",state.sub="All";render()});
+  $("#sort").addEventListener("change",function(e){state.sort=e.target.value;render()});
+
+  function drawCart(){
+    var ids=Object.keys(cart),n=0,sum=0;
+    ids.forEach(function(i){n+=cart[i];sum+=cart[i]*P[i].price});
+    $("#count").textContent=n;
+    $("#total").textContent=fmt(sum);
+    $("#items").innerHTML=ids.length?ids.map(function(i){var p=P[i];
+      return '<div class="line"><div class="th" style="--tint:'+p.tint+'">'+ART[p.art]+'</div><div><b>'+p.name+'</b><span>'+fmt(p.price)+' each</span></div>'+
+      '<div class="qty"><button data-minus="'+i+'" aria-label="Remove one">−</button><span>'+cart[i]+'</span><button data-plus="'+i+'" aria-label="Add one">+</button></div></div>';
+    }).join(""):'<p class="note" style="padding:24px 4px">Your cart is empty. Add a product to start your order.</p>';
+    $("#copyOrder").disabled=!ids.length;
+    $("#copyOrder").style.opacity=ids.length?1:.5;
+  }
+  function openCart(o){
+    $("#drawer").classList.toggle("open",o);$("#scrim").classList.toggle("open",o);
+    $("#drawer").setAttribute("aria-hidden",o?"false":"true");
+  }
+  $("#cartBtn").addEventListener("click",function(){openCart(true)});
+  $("#closeCart").addEventListener("click",function(){openCart(false)});
+  $("#scrim").addEventListener("click",function(){openCart(false)});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")openCart(false)});
+
+  $("#copyOrder").addEventListener("click",function(){
+    var ids=Object.keys(cart);if(!ids.length)return;
+    var sum=0,lines=ids.map(function(i){var p=P[i];sum+=cart[i]*p.price;return "- "+p.name+" x"+cart[i]+" = "+fmt(cart[i]*p.price)});
+    var msg="Hello SCS Cosmetics & Skincare, I would like to order:\n"+lines.join("\n")+"\nTotal: "+fmt(sum)+"\nName:\nPhone:\nAddress:";
+    function ok(){toast("Order message copied. Paste it on our Facebook page.")}
+    function fallback(){
+      var ta=document.createElement("textarea");ta.value=msg;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+      try{document.execCommand("copy");ok()}catch(_){toast("Copy failed. Please type your order on Facebook.")}
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(ok,fallback)}else fallback();
+  });
+
+  // theme toggle
+  $("#themeBtn").addEventListener("click",function(){
+    var r=document.documentElement,cur=r.getAttribute("data-theme");
+    if(!cur)cur=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+    r.setAttribute("data-theme",cur==="dark"?"light":"dark");
+  });
+
+  buildNav();buildTiles();render();drawCart();
+})();
+</script>
+
+</body>
+</html>
